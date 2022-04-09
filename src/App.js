@@ -4,6 +4,8 @@ import app from './firebase.init'
 import {
 	createUserWithEmailAndPassword,
 	getAuth,
+	sendEmailVerification,
+	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
 } from 'firebase/auth'
 import Form from 'react-bootstrap/Form'
@@ -65,6 +67,7 @@ function App() {
 					setEmail('')
 					setPassword('')
 					console.log(user)
+					verifyEmail()
 				})
 				.catch(error => {
 					console.error(error)
@@ -73,6 +76,18 @@ function App() {
 		}
 
 		event.preventDefault()
+	}
+
+	const handlePasswordReset = () => {
+		sendPasswordResetEmail(auth, email).then(() => {
+			console.log('email sent')
+		})
+	}
+
+	const verifyEmail = () => {
+		sendEmailVerification(auth.currentUser).then(() => {
+			console.log('email verification sent')
+		})
 	}
 
 	return (
@@ -118,6 +133,10 @@ function App() {
 						<Form.Check type='checkbox' label='Already Registered?' />
 					</Form.Group>
 					<p className='text-danger'>{error}</p>
+					<Button onClick={handlePasswordReset} variant='link'>
+						Forgot Password?
+					</Button>
+					<br />
 					<Button variant='primary' type='submit'>
 						{registered ? 'Login' : 'Register'}
 					</Button>
